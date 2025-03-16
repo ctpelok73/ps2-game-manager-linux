@@ -31,17 +31,43 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
         
+    - name: List current directory
+      run: |
+        pwd
+        ls -la
+        
     - name: Download database files
       run: |
-        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_as.json
-        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_au.json
-        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_eu.json
-        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_jp.json
-        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_ko.json
-        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_us.json
+        mkdir -p databases
+        cd databases
+        curl -L -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_as.json
+        curl -L -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_au.json
+        curl -L -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_eu.json
+        curl -L -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_jp.json
+        curl -L -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_ko.json
+        curl -L -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_us.json
+        cd ..
+        ls -la databases/
+        
+    - name: Create assets directory
+      run: |
+        mkdir -p assets
+        
+    - name: Install additional Linux dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-tk
         
     - name: Build with build.py
-      run: python build.py
+      run: |
+        python -c "import sys; print(sys.path)"
+        python -c "import customtkinter; print('customtkinter version:', customtkinter.__version__)"
+        python build.py
+      
+    - name: List dist directory
+      run: |
+        ls -la dist/
         
     - name: Create Release
       uses: softprops/action-gh-release@v1
