@@ -13,9 +13,9 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            output_name: ps2-game-manager-linux
+            output_name: PS2GamesManager
           - os: windows-latest
-            output_name: ps2-game-manager-windows.exe
+            output_name: PS2GamesManager.exe
     
     steps:
     - uses: actions/checkout@v3
@@ -31,15 +31,24 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
         
-    - name: Build with PyInstaller
+    - name: Download database files
       run: |
-        pyinstaller --onefile --windowed --name ${{ matrix.output_name }} gui.py
+        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_as.json
+        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_au.json
+        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_eu.json
+        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_jp.json
+        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_ko.json
+        curl -O https://raw.githubusercontent.com/ctpelok73/ps2-game-manager-linux/main/db_playstation2_official_us.json
+        
+    - name: Build with build.py
+      run: python build.py
         
     - name: Create Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: dist/${{ matrix.output_name }}*
+        files: |
+          dist/${{ matrix.output_name }}
         draft: false
         prerelease: false
       env:
