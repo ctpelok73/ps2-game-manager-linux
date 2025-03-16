@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=PS2 Games Manager
+Comment=Менеджер игр для PlayStation 2
+Exec=ps2gamesmanager
+Icon=ps2gamesmanager
+Terminal=false
+Type=Application
+Categories=Game;Utility;

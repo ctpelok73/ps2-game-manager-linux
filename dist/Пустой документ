@@ -1,0 +1,21 @@
+# Создаем директорию для приложения
+sudo mkdir -p /opt/ps2gamesmanager
+
+# Копируем исполняемый файл
+sudo cp dist/PS2GamesManager /opt/ps2gamesmanager/
+
+# Создаем символическую ссылку
+sudo ln -s /opt/ps2gamesmanager/PS2GamesManager /usr/local/bin/ps2gamesmanager
+
+# Копируем иконки
+sudo mkdir -p /usr/share/icons/hicolor/
+for size in 16 32 48 64 128 256; do
+    sudo cp assets/linux/ps2gamesmanager_${size}x${size}.png /usr/share/icons/hicolor/${size}x${size}/apps/ps2gamesmanager.png
+done
+
+# Устанавливаем .desktop файл
+sudo cp assets/ps2gamesmanager.desktop /usr/share/applications/
+
+# Обновляем кэш иконок
+sudo update-desktop-database
+sudo gtk-update-icon-cache -f -t /usr/share/icons/hicolor/
